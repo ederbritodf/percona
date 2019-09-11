@@ -648,6 +648,25 @@ echo ""
 	exit
 }
 
+CONFIGCLUSTER(){
+
+echo ""
+	echo "-----------------------------------------------------------"
+	echo "ATUALIZA VARIAVEL: "wsrep_cluster_address" NO NODE MASTER  "
+	echo "-----------------------------------------------------------"
+	echo "Configurando variável ..."
+	echo "wsrep_cluster_address=gcomm://'$NODE1','$NODE3','$NODE3'"
+	sed -i '/wsrep_cluster_address/d' $MYCNFD$CUSTOM
+	echo "wsrep_cluster_address=gcomm://'$NODE1','$NODE3','$NODE3'" >> $MYCNFD$CUSTOM
+	echo "------------------------------------"
+	echo "STOP MYSQL@BOOTSTRAP - $NODE1 "
+	echo "------------------------------------"
+	systemctl stop mysql@bootstrap
+	echo "------------------------------------"
+	echo "START MYSQL - $NODE1"
+	echo "------------------------------------"
+	systemctl start mysql
+}
 
 INFORME
 HOSTS
@@ -663,6 +682,8 @@ CONFIGURANODE3
 CONFIGURANODE1
 STOPALL
 STARTALL
+MONITOR
+CONFIGCLUSTER
 MONITOR
 #VERIFYREPLICATION
 #REPNODE2
