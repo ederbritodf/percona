@@ -8,7 +8,7 @@ Automatização do processo de instalação de um cluster Percona com 3 nodes Mu
 
 # Script
 
-- [Link](https://github.com/ederbritodf/percona/blob/master/install-percona-nodes.sh)
+- [Download Script](https://github.com/ederbritodf/percona/blob/master/install-percona-nodes.sh)
 
 # Configuração de Cluster Percona XtraDB-Backup
 
