@@ -33,7 +33,9 @@ Bootstrapping the cluster is a bit of a manual process. On the initial node, var
 
 # Útils
 
-  show status like 'wsrep%';
+    "SHOW STATUS LIKE 'wsrep%';"
+    "SHOW STATUS LIKE 'wsrep_local_state_comment';"
+    "SHOW GLOBAL status like 'wsrep_cluster_size';"
 
 # Reference
 
