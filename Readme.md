@@ -24,6 +24,10 @@ This is the default SST method (version 2 of it: xtrabackup-v2). This is the lea
 
 State Snapshot Transfer is a full data copy from one node (donor) to the joining node (joiner). It’s used when a new node joins the cluster. In order to be synchronized with the cluster, new node has to transfer data from the node that is already part of the cluster. There are three methods of SST available in Percona XtraDB Cluster: mysqldump, rsync and xtrabackup. The downside of mysqldump and rsync is that the donor node becomes READ-ONLY while data is being copied from one node to another. Xtrabackup SST, on the other hand, uses backup locks, which means galera provider is not paused at all as with FTWRL (Flush Tables with Read Lock) earlier. State snapshot transfer method can be configured with the wsrep_sst_method variable.
 
+# Bootstrapping the cluster
+
+Bootstrapping refers to getting the initial cluster up and running. By bootstrapping you are defining which node is has the correct information, that all the other nodes should synchronize to (via SST). In the event of a cluster-wide crash, bootstrapping functions the same way: by picking the initial node, you are essentially deciding which cluster node contains the database you want to go forward with.
+
 
 
 # Reference
