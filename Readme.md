@@ -31,7 +31,13 @@ Bootstrapping refers to getting the initial cluster up and running. By bootstrap
 Bootstrapping the cluster is a bit of a manual process. On the initial node, variable wsrep_cluster_address should be set to the value: gcomm://. The gcomm:// tells the node it can bootstrap without any cluster to connect to. Setting that and starting up the first node should result in a cluster with a wsrep_cluster_conf_id of 1. After this single-node cluster is started, variable wsrep_cluster_address should be updated to the list of all nodes in the cluster. 
 
 
+# Útils
+
+  show status like 'wsrep%';
 
 # Reference
 
 [Link de acesso à Documentação](https://www.percona.com/doc/percona-xtradb-cluster/5.6/features/multimaster-replication.html)
+
+
+
