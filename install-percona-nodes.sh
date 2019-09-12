@@ -11,10 +11,8 @@
 #######################
 
 SELINUX=/etc/selinux/config
-REPOPERCONA=https://www.percona.com/downloads/Percona-XtraDB-Cluster-56/Percona-XtraDB-Cluster-5.6.44-28.34/binary/redhat/7/x86_64/$REPOVERSION
-REPOVERSION=Percona-XtraDB-Cluster-server-56-5.6.44-28.34.1.el7.x86_64.rpm
-PERC56=https://www.percona.com/downloads/Percona-XtraDB-Cluster-56/Percona-XtraDB-Cluster-5.6.44-28.34/binary/redhat/7/x86_64/
-PERCVERSION=Percona-XtraDB-Cluster-5.6.44-28.34-r104-el7-x86_64-bundle.tar
+REPOPERC=https://www.percona.com/downloads/Percona-XtraDB-Cluster-56/Percona-XtraDB-Cluster-5.6.44-28.34/binary/redhat/7/x86_64/
+VERSIONPERC=Percona-XtraDB-Cluster-5.6.44-28.34-r104-el7-x86_64-bundle.tar
 MYCNF=/etc/my.cnf
 MYCNFD=/etc/my.cnf.d/
 CUSTOM=custom-conf-percona.cnf
@@ -26,16 +24,17 @@ COPY=/usr/bin/ssh-copy-id
 
 
 INFORME(){
-	echo ""
-	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-	echo " SCRIPT PARA CONFIGURAÇÃO CLUSTER PERCONA (GALERA3/XTRABACKUP/SST/WSREP)"
-	echo " SYSTEM CENTOS 7 - 03 NODES"
-	echo " PERCONA XTRADB CLUSTER 5.6 "
-	echo " I.  configure o mesmo usuário e senha para todos os nodes do cluster"
-	echo " II. faça conexão remota do host PRIMÁRIO para os demais HOSTS ssh"
-	echo "       para que seja configurado nos nodes o arquivo know_hosts"
-	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-	echo ""
+	echo -ne "\n\n"
+	echo " --> SCRIPT PARA CONFIGURAÇÃO CLUSTER PERCONA (GALERA3/XTRABACKUP/SST/WSREP)"
+	echo " --> SISTEMA: CENTOS 7 - ESTRUTURA COM 03 NODES"
+	echo " --> PERCONA XTRADB CLUSTER "
+	echo " ------------- "
+	echo " REQUIREMENTS: "
+	echo " ------------- "
+	echo " I.  Configuração de usuário e senha em todos os nodes. (Mesmo usuário p/ todos);"
+	echo " II. known_hosts : Acesso remoto (ssh) do node MASTER para os demais NODES."
+	echo "     O arquivo know_hostsarmazena os nomes dos hosts e as chaves dos equipamentos acessados remotamente."
+	echo -ne "\n\n"
 }
 
 HOSTS(){
@@ -44,15 +43,12 @@ echo ""
 	echo "--------------------------------------------"
 	echo "INFORME O IP DO NODE1:"
 	read NODE1
-	echo "+IP ATRIBUIDO: $NODE1"
 echo ""
 	echo "INFORME O IP DO NODE2:"
 	read NODE2
-        echo "+IP ATRIBUIDO: $NODE2"
 echo ""
 	echo "INFORME O IP DO NODE3:"
 	read NODE3
-        echo "+IP ATRIBUIDO: $NODE3"
 echo ""
 	echo "|-----------|-----------|"
 	echo "| HOSTS:    | IP:       |"
@@ -68,11 +64,11 @@ echo ""
 }
 
 USERHOSTS(){
-echo -n "INFORME O USUÁRIO DE CONEXAO REMOTA AOS NODES: "
-read USERNODES
-echo -n "INFORME A SENHA DO USUÁRIO $USERNODES: "
-read -s PASSWDNODES
-export -p PASSWDNODES
+	echo -n "INFORME O USUÁRIO PARA CONEXÃO REMOTA AOS NODES: "
+	 read USERNODES
+	echo -n "INFORME A SENHA DO USUÁRIO $USERNODES: "
+	 read -s PASSWDNODES
+	export -p PASSWDNODES
 echo ""
 }
 
@@ -91,7 +87,6 @@ echo ""
         echo "REALIZANDO COPIA SSH PARA O NODE3 - $NODE3"
         $PASSSSH -p $PASSWDNODES $COPY $USERNODES@$NODE3
 sleep 5
-	echo "+CHAVES SSH"
 
 }
 
@@ -133,11 +128,10 @@ RPMPERCONA(){
         echo "- CONFIGURE REPOSITORIO PERCONA -"
         echo "---------------------------------"
 
-	wget $PERC56$PERCVERSION
-	tar -xvf $PERCVERSION
+	wget $REPOPERC$VERSIONPERC
+	tar -xvf $VERSIONPERC
 
 }
-
 
 
 INSTALLPERCONA(){
@@ -171,10 +165,9 @@ INICIAPERCONA(){
 	systemctl start mysql@bootstrap
 	systemctl enable mysql
 	echo " +++ Inicializando PERCONA BOOTSTRAP ..."	
-	
-	sleep 5
+	 sleep 5
 	echo " Carregando ..."
-	sleep 5
+	 sleep 5
 	VALIDAPERCONA
 }
 
@@ -188,11 +181,11 @@ VALIDAPERCONA(){
 	echo $?
 	  if [ $? -eq 0 ]; then
 	echo "+MYSQL IS RUNNING"
-	FUNCTIONSPERCONA
+	 FUNCTIONSPERCONA
 	else
 	 echo "-MYSQL IS ERROR"
-	EXITPERCONA
-	 fi
+	  EXITPERCONA
+	fi
 	
 	
 }
@@ -205,7 +198,7 @@ FUNCTIONSPERCONA(){
 	mysql -e "CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so'"
 	mysql -e "CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so'"
 
-	USRPERCONA
+	 USRPERCONA
 }
 
 USRPERCONA (){
@@ -213,9 +206,9 @@ USRPERCONA (){
 #State Snapshot Transfer is the full copy of data from one node to another. 
 #It’s used when a new node joins the cluster, it has to transfer data from existing node.
 echo ""
-	echo "---------------------------"
-	echo "+CRIANDO USUÁRIO DE SERVIÇO"
-        echo "---------------------------"
+	echo "--------------------------------"
+	echo "+CRIANDO USUÁRIO DE SERVIÇO SST "
+        echo "--------------------------------"
 echo ""
 	mysql -e "CREATE USER '$UMYSQL'@'localhost' IDENTIFIED BY '$PWDMYSQL';"
 	mysql -e "GRANT RELOAD, LOCK TABLES, PROCESS, REPLICATION CLIENT ON *.* TO '$UMYSQL'@'localhost';"
@@ -239,7 +232,7 @@ CONFIGURANODE1(){
         echo "------------------------------"
         echo "-STOP PERCONA - $NODE1 "
         echo "------------------------------"
-        systemctl stop mysql@bootstrap
+         systemctl stop mysql@bootstrap
 
         echo "----------------------------"     
         echo " CONFIGURE - $MYCNF  "
@@ -310,8 +303,11 @@ echo ""
         echo "---------------------------------------------"
         echo "Copiando *.rpm"
         rsync -Cravtz /$USERNODES/*.rpm $USERNODES@$NODE2:/$USERNODES/
-#        ssh $USERNODES@$NODE2 wget $PERC56$PERCVERSION
-#        ssh $USERNODES@$NODE2 tar -xvf $PERCVERSION
+
+# Instalação nos nodes desabilitada para instalar via web  #
+# Habilitado para os nodes a copia dos pacotes ja baixados #
+#        ssh $USERNODES@$NODE2 wget $REPOPERC$VERSIONPERC
+#        ssh $USERNODES@$NODE2 tar -xvf $VERSIONPERC
 
         echo "-----------------------------"
         echo "- INSTALL PERCONA - $NODE2 "
@@ -348,14 +344,8 @@ echo ""
 #        ssh $USERNODES@$NODE2 'mysql -e "CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so';'
 #        ssh $USERNODES@$NODE2 'mysql -e "CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so';'
 
-#        echo "------------------------------"
-#        echo "-STOP PERCONA - $NODE2 "
-#        echo "------------------------------"
-#        ssh $USERNODES@$NODE2 'systemctl stop mysql'
-#	sleep 3
-
         echo "----------------------------"     
-        echo " CONFIGURE - $MYCNF  "
+        echo " CONFIGURE my.cnf - $MYCNF  "
         echo "----------------------------"
 
 	#REMOVE LINHA STRING WSREP
@@ -364,9 +354,9 @@ echo ""
         ssh $USERNODES@$NODE2 'sed -i "/wsrep_cluster_name/d" '$MYCNF' '
         ssh $USERNODES@$NODE2 'sed -i "/wsrep_node_name/d" '$MYCNF' '
         
-	echo "----------------------------"	
-	echo " CUSTOM CONFIGURE - $NODE2  "
-	echo "----------------------------"
+	echo "------------------------------------"	
+	echo " CUSTOM CREATE CONFIGURE - $NODE2   "
+	echo "------------------------------------"
 
 	ssh $USERNODES@$NODE2 'touch '$MYCNFD$CUSTOM''
 	ssh $USERNODES@$NODE2 'echo "" >> '$MYCNFD$CUSTOM' '
@@ -394,7 +384,7 @@ echo ""
         echo "------------------------------"
 	ssh $USERNODES@$NODE2 'systemctl start mysql'
         sleep 3
-        echo "Carregando ..."
+        echo "+Iniciando mysql $NODE2  ... "
         sleep 3
 
 }
@@ -428,8 +418,11 @@ echo ""
         echo "---------------------------------------------"
 	echo "Copiando *.rpm"
 	rsync -Cravtz /$USERNODES/*.rpm $USERNODES@$NODE3:/$USERNODES/
-#        ssh $USERNODES@$NODE3 wget $PERC56$PERCVERSION
-#        ssh $USERNODES@$NODE3 tar -xvf $PERCVERSION
+
+# Instalacao via web desabilitada
+# Configurada a copia rsync do node master para os demais nodes
+#        ssh $USERNODES@$NODE3 wget $REPOPERC$VERSIONPERC
+#        ssh $USERNODES@$NODE3 tar -xvf $VERSIONPERC
 
         echo "-----------------------------"
         echo "- INSTALL PERCONA - $NODE3 "
@@ -466,13 +459,8 @@ echo ""
 #        ssh $USERNODES@$NODE3 'mysql -e CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so';'
 #        ssh $USERNODES@$NODE3 'mysql -e CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so';'
 
-#        echo "------------------------------"
-#        echo "-STOP PERCONA - $NODE3 "
-#        echo "------------------------------"
-#	ssh $USERNODES@$NODE3 'systemctl stop mysql'
-
 	echo "----------------------------"     
-        echo " CONFIGURE - $MYCNF  "
+        echo " CONFIGURE my.cnf - $MYCNF  "
         echo "----------------------------"
 
 	#REMOVE LINHA STRING WSREP
@@ -482,9 +470,9 @@ echo ""
         ssh $USERNODES@$NODE3 'sed -i '/wsrep_node_name/d' '$MYCNF' '
 	
 
-        echo "----------------------------"     
-        echo " CUSTOM CONFIGURE - $NODE3  "
-        echo "----------------------------"
+        echo "------------------------------------"     
+        echo " CUSTOM CREATE CONFIGURE - $NODE3  "
+        echo "-----------------------------------"
 
         ssh $USERNODES@$NODE3 'touch '$MYCNFD$CUSTOM''
         ssh $USERNODES@$NODE3 'echo "" >> '$MYCNFD$CUSTOM' '
@@ -513,10 +501,9 @@ echo ""
         echo "------------------------------"
 	ssh $USERNODES@$NODE3 'systemctl start mysql'
 	sleep 3
-	echo "Carregando ..."
+	echo "+Iniciando mysql $NODE3 ..."
 	sleep 3
 }
-
 
 
 BOOTSTRAPPING(){
@@ -537,7 +524,6 @@ echo ""
 STOPALL(){
 
 echo ""
-        echo "----------------------"
         echo "+STOP MYSQL $NODE3"
         echo "----------------------"
 echo""
@@ -545,7 +531,6 @@ echo""
 	sleep 5
 
 echo ""
-        echo "----------------------"
         echo "+STOP MYSQL $NODE2"
         echo "----------------------"
 echo""
@@ -554,7 +539,6 @@ echo""
         sleep 5
 
 echo ""
-        echo "----------------------"
         echo "+STOP MYSQL BOOTSTRAP $NODE1"
         echo "----------------------"
 echo""
@@ -576,51 +560,47 @@ echo ""
 
 
 echo ""
-        echo "----------------------"
         echo "+START MYSQL BOOTSTRAP $NODE1"
         echo "----------------------"
 echo""
         systemctl start mysql@bootstrap
 	sleep 3
-	echo "Carregando ..."
+	echo "+Iniciando mysql $NODE1 ..."
         sleep 5
 
 
 echo ""
-        echo "----------------------"
         echo "+START MYSQL $NODE2"
         echo "----------------------"
 echo""
 
         ssh $USERNODES@$NODE2 'systemctl start mysql'
 	sleep 3
-	echo "Carregando ..."
+	echo "+Iniciando mysql $NODE2 ..."
         sleep 5
 
 echo ""
-        echo "----------------------"
         echo "+START MYSQL $NODE3"
         echo "----------------------"
 echo""
         ssh $USERNODES@$NODE3 'systemctl start mysql'
 	sleep 3
-	echo "Carregando ..."
+	echo "+Iniciando mysql $NODE3 ..."
         sleep 5
 }
-
 
 
 MONITOR(){
 
 echo ""
-	echo "----------------------"
-	echo "+EXIBINDO SAÍDA MONITOR"
-	echo "----------------------"
+	echo "------------------------------"
+	echo " EXIBINDO SAÍDA STATE CLUSTER"
+	echo "------------------------------"
 echo""
 	mysql -e "SHOW STATUS LIKE 'wsrep_local_state_comment';"
 echo ""
 	echo "-----------------------"
-	echo " + LISTA QTD. CLUSTER "
+	echo "     CLUSTER SIZE  "
 	echo "-----------------------"
 	mysql -e "show global status like 'wsrep_cluster_size';"
 
@@ -628,7 +608,7 @@ echo ""
 
 EXITHOST(){
 echo ""
-	echo "SAINDO ..."
+	echo "CANCELED ..."
 	exit
 }
 
@@ -646,14 +626,14 @@ echo ""
 	echo "------------------------------------"
 	systemctl stop mysql@bootstrap
 	sleep 3
-	echo "Carregando ..."
+	echo "Parando mysql@bootstrap $NODE1  ... "
 	sleep 5
 	echo "------------------------------------"
 	echo "START MYSQL - $NODE1"
 	echo "------------------------------------"
 	systemctl start mysql
 	sleep 3
-	echo "Carregando ..."
+	echo "Iniciando mysql $NODE1 ... "
 	sleep 5
 }
 
@@ -663,12 +643,13 @@ VERIFYREPLICATION(){
 #Use the following procedure to verify replication by creating a new database on the second node
 #creating a table for that database on the third node, and adding some records to the table on the first node.
 
+	echo "+Ações para sincronização do node bootstrap para mysql"
 	echo "Parando Mysql - $NODE1"
 	sleep 1
-	echo "Parando ..."
+	echo "Parando mysql $NODE1 ... "
 	systemctl stop mysql
 	sleep 10
-	echo " Iniciando Mysql - $NODE1"
+	echo " Iniciando Mysql - $NODE1 ... "
 	systemctl start mysql
 	sleep 1
 	echo "Iniciando ..."
@@ -681,7 +662,10 @@ VERIFYREPLICATION(){
 		 echo "Informe o nome do banco a ser criado:"
 		 read NAMEDB
 		 echo "Criando database no NODE - $NODE1"
+		 sleep 2
+echo ""	
 	         mysql -e "CREATE DATABASE $NAMEDB;"
+echo ""	
 		 VERIFYNODE2
 	  elif [ $SYNC -eq 2 ]; then
 	        echo "SINCRONIZAÇÃO CANCELADA"
@@ -697,6 +681,8 @@ VERIFYNODE2(){
         echo "  CREATE TABLE $NODE2 "
         echo "--------------------------"
 	echo "TABLE NAME: example"
+	sleep 2
+echo ""	
 	ssh $USERNODES@$NODE2 'mysql -e "CREATE TABLE '$NAMEDB'.example (ID int,name varchar(255))";'
 	VERIFYNODE3
 }
@@ -707,20 +693,24 @@ VERIFYNODE3(){
         echo "  INSERT TABLE $NODE1 "
         echo "--------------------------"
 	echo "INSERT ID: 1 - NAME: percona1"
+	sleep 2
+echo ""	
         ssh $USERNODES@$NODE3 `mysql -e "INSERT INTO $NAMEDB.example VALUES (1,'percona1')";`exit
 
 }
 
 VALIDREPLICATION(){
-
-	echo "VALIDA MULTI MASTER DATABASE"
 echo ""
 	echo "LISTA DATABASES:"
 	echo "---------------"
 	mysql -e "SHOW DATABASES";
 echo ""
+        echo "EXECUTE SELECT:"
+        echo "---------------"
 	echo "SHOW TABLES - $NAMEDB"
-        mysql -e "SELECT * FROM '$NAMEDB'.example";
+	sleep 2
+echo ""	
+        mysql -e "SELECT * FROM $NAMEDB.example";
 }
 
 INFORME
