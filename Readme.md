@@ -1,3 +1,13 @@
+<h1 align="center"> Cluster Percona - Script de Instalação👋</h1>
+
+## Author
+👤 **Eder Queiroz**
+* Github: [@ederqueirozdf](https://github.com/ederqueirozdf)
+
+## 🤝 Contribuições são bem vindas
+Linux ❤️
+<hr>
+
 Automatização do processo de instalação de um cluster Percona com 3 nodes Multi Master através de ShellScript.
 
 # Pré-Requisitos
