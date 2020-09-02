@@ -4,7 +4,6 @@
 👤 **Eder Queiroz**
 * Github: [@ederqueirozdf](https://github.com/ederqueirozdf)
 
-## 🤝 Contribuições são bem vindas
 Linux ❤️
 <hr>
 
