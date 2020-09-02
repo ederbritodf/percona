@@ -5,8 +5,7 @@
 #### 👤 Por: **Eder Queiroz**
  - 🐱 Github: [@ederqueirozdf](https://github.com/ederqueirozdf)
  - 🤙 Telegram: @ederqueirozdf
-
-Linux ❤️
+ - Linux ❤️
 <hr>
 
 Automatização do processo de instalação de um cluster Percona com 3 nodes Multi Master através de ShellScript.
