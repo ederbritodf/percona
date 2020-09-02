@@ -1,4 +1,4 @@
-<h1 align="center"> Cluster Percona - Script de Instalação👋</h1>
+<h1 align="center"> Cluster Percona - Script de Instalação 🐧 </h1>
 
 ## Author
 👤 **Eder Queiroz**
