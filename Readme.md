@@ -4,7 +4,7 @@
 
 #### 👤 Por: **Eder Queiroz**
  - 🐱 Github: [@ederqueirozdf](https://github.com/ederqueirozdf)
- - 🤙 Telegram: @ederqueirozdf
+ - 🤙 Telegram: [@ederqueirozdf](https://t.me/ederqueirozdf)
  - Linux ❤️
 <hr>
 
