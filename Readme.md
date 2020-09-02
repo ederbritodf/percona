@@ -2,9 +2,8 @@
 
 - Repositório com shell script de instalação de um cluster percona utilizando conexão remota ssh com sshpass.
 
-### Author
-👤 **Eder Queiroz**
-* Github: [@ederqueirozdf](https://github.com/ederqueirozdf)
+#### 👤 Por: **Eder Queiroz**
+ - Github: [@ederqueirozdf](https://github.com/ederqueirozdf)
 
 Linux ❤️
 <hr>
